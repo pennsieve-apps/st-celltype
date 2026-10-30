@@ -1,0 +1,168 @@
+# yaml-language-server: $schema=https://schemas.pennsieve.io/app-manifest/v1.json
+schemaVersion: "1.0"
+application:
+  name: Spatial Cell Typing
+  description: >-
+    Clusters and cell types for single-cell spatial transcriptomics (10x Xenium, Vizgen MERSCOPE,
+    NanoString CosMx; also Visium HD bins), the step after st-qc in the Single-cell Spatial
+    Profiling workflow. All samples are clustered jointly: PCA of the log-normalized expression,
+    optional Harmony integration by sample, a k-nearest-neighbour graph and Leiden clusters
+    (C01, C02, ...). Each observation is scored for marker gene sets (scanpy score_genes) from a
+    user markers.csv or a built-in table of canonical markers drawn from PanglaoDB, matched to the
+    panel case-insensitively (human and mouse), and each cluster (or each cell) is called the cell
+    type with the highest standardised score, or Unassigned. Writes labels.csv (sample_id, obs_id,
+    cluster, cell_type) for st-niches, st-ccc and st-report, cluster markers, scores and
+    summaries, plus UMAPs, spatial cell-type maps, a marker dotplot and composition bars.
+  type: processor
+  tags:
+    - spatial-transcriptomics
+    - transcriptomics
+    - genomics
+    - single-cell
+    - xenium
+    - merscope
+    - cosmx
+    - visium-hd
+    - clustering
+    - cell-typing
+runtime:
+  cpu: 4096
+  # Measured in the linux/amd64 image under emulation on an M-series Mac on the full Xenium breast
+  # demo (2 slides, 282 k cells x 313 genes); see README "Runtime".
+  memory: 8192
+  computeTypes:
+    - standard
+  timeoutSeconds: 14400
+parameters:
+  - name: RESOLUTION
+    type: number
+    label: Leiden resolution
+    description: >-
+      Leiden resolution; higher gives more, smaller clusters. 0.5 suits a few hundred-gene panel
+      with tens of thousands of cells; raise it (1-2) to split immune or stromal subtypes.
+    defaultValue: 0.5
+    min: 0.01
+    max: 10
+  - name: N_NEIGHBORS
+    type: integer
+    label: Neighbours
+    description: Nearest neighbours per observation in the expression graph (scanpy.pp.neighbors).
+    defaultValue: 15
+    min: 2
+    max: 200
+  - name: N_PCS
+    type: integer
+    label: Principal components
+    description: >-
+      Principal components used for integration and the neighbour graph, capped by the number of
+      genes and observations.
+    defaultValue: 30
+    min: 2
+    max: 200
+  - name: INTEGRATION
+    type: string
+    label: Integration
+    description: >-
+      harmony: correct the PCA for sample (Harmony on obs["sample_id"]) before building the graph,
+      so the same cell type from different slides lands in one cluster (applied only with more
+      than one sample). none: cluster the joint PCA as is.
+    defaultValue: harmony
+    validValues: [harmony, none]
+  - name: MARKER_SET
+    type: string
+    label: Marker set
+    description: >-
+      builtin: the canonical marker table bundled with the app (37 cell types from PanglaoDB),
+      used when no markers.csv is linked. none: clusters only, every cell_type is Unassigned. A
+      markers.csv on the markers input always takes precedence.
+    defaultValue: builtin
+    validValues: [builtin, none]
+  - name: ANNOTATE
+    type: string
+    label: Annotate
+    description: >-
+      cluster: one cell type per Leiden cluster, the marker set with the highest mean z-scored
+      score over the cluster's observations (robust; the default). cell: each observation gets its
+      own best marker set (noisier on sparse panels, but splits mixed clusters).
+    defaultValue: cluster
+    validValues: [cluster, cell]
+  - name: MIN_SCORE
+    type: number
+    label: Minimum score
+    description: >-
+      A cluster (or cell) whose best mean z-scored marker score is below this is Unassigned.
+    defaultValue: 0.1
+  - name: MIN_GENES_PRESENT
+    type: integer
+    label: Minimum marker genes present
+    description: A marker set is scored only when at least this many of its genes are in the panel.
+    defaultValue: 2
+    min: 1
+    max: 50
+  - name: MAX_OBS_FOR_UMAP
+    type: integer
+    label: Observations in the UMAP
+    description: The UMAP figures embed a seeded random subsample of at most this many observations.
+    defaultValue: 50000
+    min: 10
+  - name: SEED
+    type: integer
+    description: Random seed for PCA, Harmony, Leiden, the UMAP and the subsamples.
+    defaultValue: 42
+  - name: THREADS
+    type: integer
+    label: Threads
+    description: BLAS / numba / Harmony threads; 0 = from the container's CPU quota.
+    defaultValue: 0
+    min: 0
+    max: 64
+# Each input in its own folder (placement: subfolder) when linked; without links the files are
+# found by name anywhere under INPUT_DIR.
+inputs:
+  - name: spatial
+    description: >-
+      st-qc's <sample_id>.h5ad, one per sample: X log-normalized (CSR), layers["counts"],
+      obsm["spatial"], uns["pennsieve"]; obsm["X_pca"] is recomputed jointly over all samples.
+    formats:
+      - format_3590
+    mediaTypes:
+      - application/x-hdf5
+    placement: subfolder
+    required: true
+  - name: metadata
+    description: >-
+      st-prep's samples.csv (sample_id, path, platform, kind, n_obs, n_genes, n_obs_in_tissue and
+      any extra sample-sheet columns); lists the samples to use and their order.
+    mediaTypes:
+      - text/csv
+      - application/json
+    placement: subfolder
+    required: true
+  - name: markers
+    description: >-
+      Optional markers.csv: long (cell_type, gene; one gene per row) or wide (cell_type, genes;
+      genes separated by ';'). Replaces the built-in marker table.
+    mediaTypes:
+      - text/csv
+    placement: subfolder
+    required: false
+outputs:
+  - name: labels
+    description: >-
+      labels/labels.csv (sample_id, obs_id, cluster, cell_type), cluster_markers.csv (cluster,
+      gene, logfoldchange, pval_adj, pct_in, pct_out, rank, score), cell_type_summary.csv and
+      cluster_summary.csv (sample_id, label, n_obs, fraction), cluster_annotation.csv (cluster,
+      cell_type, score, n_obs, second_best, second_score), scores.csv (sample_id, obs_id, one
+      z-scored column per marker set), agreement.csv and confusion.csv when obs["annotation"]
+      exists, summary.json, provenance.json.
+    mediaTypes:
+      - text/csv
+      - application/json
+  - name: figures
+    description: >-
+      figures/umap_cluster.png, umap_cell_type.png, <sample_id>_cell_type.png (cell types in
+      space), dotplot_marker_sets.png (marker-set scores by cluster), cell_type_by_sample.png
+      (composition), summary.json, provenance.json.
+    mediaTypes:
+      - image/png
+      - application/json

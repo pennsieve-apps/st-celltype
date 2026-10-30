@@ -1,0 +1,242 @@
+cff-version: 1.2.0
+message: "If you use st-celltype, please cite it and the methods and data it builds on, listed under references."
+type: software
+title: st-celltype
+abstract: >-
+  A Pennsieve processor for single-cell spatial transcriptomics (Xenium, MERSCOPE, CosMx, Visium HD
+  bins): joint PCA, optional Harmony integration by sample, Leiden clustering, and marker-set
+  scoring (scanpy score_genes) against a user marker table or a built-in canonical table drawn
+  from PanglaoDB, calling a cell type per cluster or per cell; writes labels, cluster markers,
+  scores, summaries and figures.
+authors:
+  - name: Pennsieve (University of Pennsylvania)
+repository-code: "https://github.com/pennsieve-apps/st-celltype"
+license: Apache-2.0
+keywords:
+  - spatial transcriptomics
+  - single-cell
+  - cell typing
+  - clustering
+  - Xenium
+  - MERSCOPE
+  - CosMx
+  - Leiden
+  - Harmony
+  - marker genes
+references:
+  - type: article
+    title: "SCANPY: large-scale single-cell gene expression data analysis"
+    authors:
+      - family-names: Wolf
+        given-names: F. Alexander
+      - family-names: Angerer
+        given-names: Philipp
+      - family-names: Theis
+        given-names: Fabian J.
+    journal: Genome Biology
+    year: 2018
+    volume: 19
+    issue: 1
+    start: 15
+    doi: 10.1186/s13059-017-1382-0
+    notes: "PMID 29409532"
+  - type: article
+    title: "anndata: Access and store annotated data matrices"
+    authors:
+      - family-names: Virshup
+        given-names: Isaac
+      - family-names: Rybakov
+        given-names: Sergei
+      - family-names: Theis
+        given-names: Fabian J.
+      - family-names: Angerer
+        given-names: Philipp
+      - family-names: Wolf
+        given-names: F. Alexander
+    journal: Journal of Open Source Software
+    year: 2024
+    volume: 9
+    issue: 101
+    start: 4371
+    doi: 10.21105/joss.04371
+  - type: article
+    title: "Fast, sensitive and accurate integration of single-cell data with Harmony"
+    authors:
+      - family-names: Korsunsky
+        given-names: Ilya
+      - family-names: Millard
+        given-names: Nghia
+      - family-names: Fan
+        given-names: Jean
+      - family-names: Slowikowski
+        given-names: Kamil
+      - family-names: Zhang
+        given-names: Fan
+      - family-names: Wei
+        given-names: Kevin
+      - family-names: Baglaenko
+        given-names: Yuriy
+      - family-names: Brenner
+        given-names: Michael
+      - family-names: Loh
+        given-names: Po-ru
+      - family-names: Raychaudhuri
+        given-names: Soumya
+    journal: Nature Methods
+    year: 2019
+    volume: 16
+    issue: 12
+    start: 1289
+    end: 1296
+    doi: 10.1038/s41592-019-0619-0
+    notes: "PMID 31740819"
+  - type: article
+    title: "From Louvain to Leiden: guaranteeing well-connected communities"
+    authors:
+      - family-names: Traag
+        given-names: V. A.
+      - family-names: Waltman
+        given-names: L.
+      - family-names: van Eck
+        given-names: N. J.
+    journal: Scientific Reports
+    year: 2019
+    volume: 9
+    issue: 1
+    start: 5233
+    doi: 10.1038/s41598-019-41695-z
+    notes: "PMID 30914743"
+  - type: article
+    title: "UMAP: Uniform Manifold Approximation and Projection"
+    authors:
+      - family-names: McInnes
+        given-names: Leland
+      - family-names: Healy
+        given-names: John
+      - family-names: Saul
+        given-names: Nathaniel
+      - family-names: Großberger
+        given-names: Lukas
+    journal: Journal of Open Source Software
+    year: 2018
+    volume: 3
+    issue: 29
+    start: 861
+    doi: 10.21105/joss.00861
+  - type: article
+    title: "Spatial reconstruction of single-cell gene expression data"
+    authors:
+      - family-names: Satija
+        given-names: Rahul
+      - family-names: Farrell
+        given-names: Jeffrey A
+      - family-names: Gennert
+        given-names: David
+      - family-names: Schier
+        given-names: Alexander F
+      - family-names: Regev
+        given-names: Aviv
+    journal: Nature Biotechnology
+    year: 2015
+    volume: 33
+    issue: 5
+    start: 495
+    end: 502
+    doi: 10.1038/nbt.3192
+    notes: "PMID 25867923. The gene-set score that scanpy.tl.score_genes reproduces."
+  - type: article
+    title: "PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data"
+    authors:
+      - family-names: Franzén
+        given-names: Oscar
+      - family-names: Gan
+        given-names: Li-Ming
+      - family-names: Björkegren
+        given-names: Johan L M
+    journal: Database
+    year: 2019
+    volume: 2019
+    start: baz046
+    doi: 10.1093/database/baz046
+    notes: "PMID 30951143. Source of the built-in marker table."
+  - type: article
+    title: "Integrated intra- and intercellular signaling knowledge for multicellular omics analysis"
+    authors:
+      - family-names: Türei
+        given-names: Dénes
+      - family-names: Valdeolivas
+        given-names: Alberto
+      - family-names: Gul
+        given-names: Lejla
+      - family-names: Palacio‐Escat
+        given-names: Nicolàs
+      - family-names: Klein
+        given-names: Michal
+      - family-names: Ivanova
+        given-names: Olga
+      - family-names: Ölbei
+        given-names: Márton
+      - family-names: Gábor
+        given-names: Attila
+      - family-names: Theis
+        given-names: Fabian
+      - family-names: Módos
+        given-names: Dezső
+      - family-names: Korcsmáros
+        given-names: Tamás
+      - family-names: Saez‐Rodriguez
+        given-names: Julio
+    journal: Molecular Systems Biology
+    year: 2021
+    volume: 17
+    issue: 3
+    start: e9923
+    doi: 10.15252/msb.20209923
+    notes: "PMID 33749993. OmniPath, through which the PanglaoDB marker table was read to check the built-in table."
+  - type: software
+    title: "igraph (Python interface): community_leiden, the Leiden implementation behind scanpy.tl.leiden(flavor='igraph')"
+    authors:
+      - name: The igraph core team
+    repository-code: "https://github.com/igraph/python-igraph"
+    license: GPL-2.0-or-later
+  - type: article
+    title: "High resolution mapping of the tumor microenvironment using integrated single-cell, spatial and in situ analysis"
+    authors:
+      - family-names: Janesick
+        given-names: Amanda
+      - family-names: Shelansky
+        given-names: Robert
+      - family-names: Gottscho
+        given-names: Andrew D.
+      - family-names: Wagner
+        given-names: Florian
+      - family-names: Williams
+        given-names: Stephen R.
+      - family-names: Rouault
+        given-names: Morgane
+      - family-names: Beliakoff
+        given-names: Ghezal
+      - family-names: Morrison
+        given-names: Carolyn A.
+      - family-names: Oliveira
+        given-names: Michelli F.
+      - family-names: Sicherman
+        given-names: Jordan T.
+      - family-names: Kohlway
+        given-names: Andrew
+      - family-names: Abousoud
+        given-names: Jawad
+      - family-names: Drennon
+        given-names: Tingsheng Yu
+      - family-names: Mohabbat
+        given-names: Seayar H.
+      - name: 10x Development Teams
+      - family-names: Taylor
+        given-names: Sarah E. B.
+    journal: Nature Communications
+    year: 2023
+    volume: 14
+    issue: 1
+    start: 8353
+    doi: 10.1038/s41467-023-43458-x
+    notes: "PMID 38114474. The Xenium FFPE Human Breast Cancer demo data (10x Genomics, CC BY 4.0)."
